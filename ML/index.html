@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PCI Predictor</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f0f2f5;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: green;
+        }
+        #formulae {
+            margin-top: 20px;
+            font-size: 20px;
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Per Capita Income Predictor</h1>
+    <input type="number" id="yearInput" placeholder="Enter Year" />
+    <br>
+    <button onclick="predictPCI()">Predict</button>
+
+    <div id="result"></div>
+    <div id="formulae"></div>
+
+    <script>
+        async function predictPCI() {
+            const year = document.getElementById("yearInput").value;
+            const res = await fetch("http://127.0.0.1:8000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ year: parseInt(year) })
+            });
+
+            const data = await res.json();
+            document.getElementById("result").innerText =
+                `Predicted PCI for ${data.year}: ₹${data.predicted_pci}`;
+            document.getElementById("formulae").innerText =
+                `Formulae(y=mx+c): y = ${data.co_efficient*data.year+ data.intercept}`
+        }
+    </script>
+
+</body>
+
+</html>
